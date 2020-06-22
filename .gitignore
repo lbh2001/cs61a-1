@@ -1,0 +1,23 @@
+# Ok
+*.ok
+.ok_*
+ok
+tests
+construct_check.py
+
+# Python
+__pycache__
+
+# Haskell
+*.o
+*.hi
+*.exe
+
+# Scheme
+scheme
+editor
+!/Projects/scheme
+
+# SQL
+sqlite3
+sqlite_shell.py
