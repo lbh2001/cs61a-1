@@ -124,14 +124,13 @@ def hailstone(x):
     7
     """
     "*** YOUR CODE HERE ***"
-    k = x               # store parameter into a variable for manipulation
     i = 1               # counter for the sequence length 
-    print(k)            # bad code need it to print for the initial value :3
-    while(k!=1):
-        if(k%2==0):
-            k = k//2
+    print(x)            # bad code need it to print for the initial value :3
+    while(x!=1):
+        if(x%2==0):
+            x = x//2
         else:
-            k = k * 3 + 1
-        print(k)
+            x = x * 3 + 1
+        print(x)
         i+=1
     return i
