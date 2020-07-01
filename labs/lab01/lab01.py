@@ -34,7 +34,7 @@ def sum_digits(y):
     total = 0
     for i in range(len(str(y))):
         print('DEBUG: Current value is:',y//10**int(i)%10)
-        total+=y//10**int(i)%10
+        total+=y//10**i%10
     return total
 
 def double_eights(n):
