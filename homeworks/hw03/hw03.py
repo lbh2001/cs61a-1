@@ -129,7 +129,24 @@ def count_change(total):
     True
     """
     "*** YOUR CODE HERE ***"
+    def coin(total, n=0):
+        if total == 0:
+            return 0
+        else:
+            if total < 2**(n+1):
+                return 2**n
+            else:
+                return coin(total, n+1)
 
+    def helper(n,curr_coin):
+        if n == 0:
+            return 1
+        elif n < 0 or curr_coin == 0:
+            return 0
+        else:
+            return helper(n-curr_coin, curr_coin)+helper(n, coin(curr_coin-1))
+
+    return helper(total, coin(total))
 
 def print_move(origin, destination):
     """Print instructions to move a disk."""
