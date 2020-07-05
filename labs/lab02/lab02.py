@@ -69,11 +69,7 @@ def both_paths(sofar="S"):
     """
     "*** YOUR CODE HERE ***"
     print(sofar)
-    def funcUp():
-        return both_paths(sofar+"U")
-    def funcDown():
-        return both_paths(sofar+"D")
-    return funcUp, funcDown
+    return lambda : both_paths(sofar+"U"), lambda : both_paths(sofar+"D")
 
 def compose1(f, g):
     """Return the composition function which given x, computes f(g(x)).
