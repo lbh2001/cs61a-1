@@ -24,15 +24,16 @@ def roll_dice(num_rolls, dice=six_sided):
     "*** YOUR CODE HERE ***"
     counter, total, is_one  = 0, 0, False
     while counter < num_rolls:
-        counter+=1
+        counter += 1
         value = dice()
-        print("DEBUG: Dice "+ str(counter)+" is "+ str(value))
         if value != 1:
             total += value
         else:
             is_one = True
-    print("DEBUG: Total is", total if not is_one else 1)
-    return total if not is_one else 1
+    if not is_one:
+        return total
+    else:
+        return 1
     # END PROBLEM 1
 
 def free_bacon(score):
@@ -43,9 +44,9 @@ def free_bacon(score):
     assert score < 100, 'The game should be over.'
     # BEGIN PROBLEM 2
     "*** YOUR CODE HERE ***"
-    ones = score%10
-    tens = score%100//10
-    return 10-ones+tens
+    ones = score % 10
+    tens = score % 100 // 10
+    return 10 - ones + tens
     # END PROBLEM 2
 
 
@@ -64,7 +65,10 @@ def take_turn(num_rolls, opponent_score, dice=six_sided):
     assert opponent_score < 100, 'The game should be over.'
     # BEGIN PROBLEM 3
     "*** YOUR CODE HERE ***"
-    return roll_dice(num_rolls, dice) if num_rolls else free_bacon(opponent_score)
+    if num_rolls:
+        return roll_dice(num_rolls, dice)
+    else:
+        return free_bacon(opponent_score)
     # END PROBLEM 3
 
 
@@ -74,8 +78,8 @@ def is_swap(player_score, opponent_score):
     """
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
-    abs_difference = abs(player_score%10-opponent_score%10)
-    opponent_tens = opponent_score%100//10
+    abs_difference = abs(player_score % 10 - opponent_score % 10)
+    opponent_tens = opponent_score % 100 // 10
     return abs_difference == opponent_tens
     # END PROBLEM 4
 
@@ -118,28 +122,27 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
     swap = lambda player_score, opponent_score : (opponent_score, player_score)
-    previous_scores = (0,0)
+    prev_s1, prev_s2 = 0, 0
     while (score0 < goal and score1 < goal):
-        print("DEBUG: "+ str(who) + "'s turn")
         if not who:
             score = take_turn(strategy0(score0, score1), score1, dice)
-            score0 += score + 3 if feral_hogs and abs(previous_scores[0]-strategy0(score0, score1)) == 2 else score
-            previous_scores = (score, previous_scores[1])
+            if feral_hogs and abs(prev_s1-strategy0(score0, score1)) == 2:
+                score0 += score + 3
+            else:
+                score0 += score
+            prev_s1 = score
             if is_swap(score0, score1):
-                print("DEBUG: Swapped Occurs")
                 score0, score1 = swap(score0, score1)
         else:
             score = take_turn(strategy1(score1, score0), score0, dice)
-            score1 += score + 3 if feral_hogs and abs(previous_scores[1]-strategy1(score1, score0)) == 2 else score
-            previous_scores = (previous_scores[0], score)
+            if feral_hogs and abs(prev_s2-strategy1(score1, score0)) == 2:
+                score1 += score + 3
+            else:
+                score1 += score
+            prev_s2 = score
             if is_swap(score1, score0):
-                print("DEBUG: Swapped Occurs")
                 score1, score0 = swap(score1, score0)
-        print("DEBUG: score0",score0)
-        print("DEBUG: score1",score1)
-        print("DEBUG: ----------------")
-        who = -who+1
-
+        who = other(who)
     # END PROBLEM 5
     # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
     # BEGIN PROBLEM 6
@@ -281,9 +284,9 @@ def make_averaged(original_function, trials_count=1000):
     def averagefunc(*args):
         total, i = 0, 0
         while i < trials_count:
-            total+=original_function(*args)
-            i+=1
-        return total/trials_count
+            total += original_function(*args)
+            i += 1
+        return total / trials_count
     return averagefunc
     # END PROBLEM 8
 
@@ -300,10 +303,11 @@ def max_scoring_num_rolls(dice=six_sided, trials_count=1000):
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
     max_rolls, max_avg= 1, 0
+    func = make_averaged(roll_dice, trials_count)
     for i in range(10):
-        score = make_averaged(roll_dice, trials_count)(i+1,dice)
+        score = func(i+1,dice)
         if max_avg < score:
-            max_rolls, max_avg = i+1, score
+            max_rolls, max_avg = i + 1, score
     return max_rolls
     # END PROBLEM 9
 

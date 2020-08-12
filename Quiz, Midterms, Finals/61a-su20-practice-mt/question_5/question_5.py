@@ -1,104 +1,48 @@
 
-
-#    Definitions. A trictionary is a pair of Tree instances k and v that have identical structure: each node in k
-#    has a corresponding node in v. The labels in k are called keys. Each key may be the label for multiple nodes
-#    in k, and the values for that key are the labels of all the corresponding nodes in v.
-#    A lookup function returns one of the values for a key. Specifically, a lookup function for a node in k is a function
-#    that takes v as an argument and returns the label for the corresponding node in v.
-#    Implement the generator function lookups, which takes a Tree instance k and some key. It yields all lookup
-#    functions for nodes in k that have key as their label. The new_lookup function is part of the implementation.
-#
-#       k:                        v:                             key:     value:
-#                  5                         'Go'                 2        'C', 'A'
-#               /  |  \                    /   |  \               3        'S'
-#             7    8    5               'C'   'A'  'L'            4         6, 1
-#            /   / |    | \             /    / |    | \           5        'Go', 'L'
-#           2   3  4    4  2          'C'  'S' 6    1 'A'         7        'C'
-#                                                                 8        'A'
-#
-
-def lookups(k, key):
-    """Yield one lookup function for each node of k that has the label key.
-    >>> k = Tree(5, [Tree(7, [Tree(2)]), Tree(8, [Tree(3), Tree(4)]), Tree(5, [Tree(4), Tree(2)])])
-    >>> v = Tree('Go', [Tree('C', [Tree('C')]), Tree('A', [Tree('S'), Tree(6)]), Tree('L', [Tree(1), Tree('A')])])        
-    >>> [f(v) for f in lookups(k, 2)]
-    ['C', 'A']
-    >>> [f(v) for f in lookups(k, 3)]
-    ['S']
-    >>> [f(v) for f in lookups(k, 6)]
-    []
+# Implement sequence, which takes a positive integer n and a function term. It returns an integer whose digits
+# show the n elements of the sequence term(1), term(2), . . . , term(n) in order. Assume the term function takes
+# a positive integer argument and returns a positive integer.
+# Important: You may not use pow, **, log, str, or len in your solution.
+def sequence(n, term):
+    """Return the first n terms of a sequence as an integer.
+    >>> sequence(6, abs) # Terms are 1, 2, 3, 4, 5, 6
+    123456
+    >>> sequence(5, lambda k: k+8) # Terms are 9, 10, 11, 12, 13
+    910111213
+    >>> sequence(4, lambda k: pow(10, k)) # Terms are 10, 100, 1000, 10000
+    10100100010000
     """
-    if ______:
-        yield lambda v: ______
-    for i in range(len(k.branches)):
-        for ______ in ______:
-            yield new_lookup(i, lookup)
-def new_lookup(i, f):
-    def g(v):
-        return ______
-    return g
-
-
-### Tree Class definition ###
-class Tree:
-    def __init__(self, label, branches=[]):
-        self.label = label
-        for branch in branches:
-            assert isinstance(branch, Tree)
-        self.branches = list(branches)
-
-    def is_leaf(self):
-        return not self.branches
+    t, k = 0, 1
+    while k <= n:
+        m = 1
+        x = term(k)
+        while m <= x:
+            m *= 10
+        t = t*m + x
+        k = k + 1
+    return t
 
 # ORIGINAL SKELETON FOLLOWS
 
-
-# #    Definitions. A trictionary is a pair of Tree instances k and v that have identical structure: each node in k
-# #    has a corresponding node in v. The labels in k are called keys. Each key may be the label for multiple nodes
-# #    in k, and the values for that key are the labels of all the corresponding nodes in v.
-# #    A lookup function returns one of the values for a key. Specifically, a lookup function for a node in k is a function
-# #    that takes v as an argument and returns the label for the corresponding node in v.
-# #    Implement the generator function lookups, which takes a Tree instance k and some key. It yields all lookup
-# #    functions for nodes in k that have key as their label. The new_lookup function is part of the implementation.
-# #
-# #       k:                        v:                             key:     value:
-# #                  5                         'Go'                 2        'C', 'A'
-# #               /  |  \                    /   |  \               3        'S'
-# #             7    8    5               'C'   'A'  'L'            4         6, 1
-# #            /   / |    | \             /    / |    | \           5        'Go', 'L'
-# #           2   3  4    4  2          'C'  'S' 6    1 'A'         7        'C'
-# #                                                                 8        'A'
-# #
-
-# def lookups(k, key):
-#     """Yield one lookup function for each node of k that has the label key.
-#     >>> k = Tree(5, [Tree(7, [Tree(2)]), Tree(8, [Tree(3), Tree(4)]), Tree(5, [Tree(4), Tree(2)])])
-#     >>> v = Tree('Go', [Tree('C', [Tree('C')]), Tree('A', [Tree('S'), Tree(6)]), Tree('L', [Tree(1), Tree('A')])])        
-#     >>> [f(v) for f in lookups(k, 2)]
-#     ['C', 'A']
-#     >>> [f(v) for f in lookups(k, 3)]
-#     ['S']
-#     >>> [f(v) for f in lookups(k, 6)]
-#     []
+# # Implement sequence, which takes a positive integer n and a function term. It returns an integer whose digits
+# # show the n elements of the sequence term(1), term(2), . . . , term(n) in order. Assume the term function takes
+# # a positive integer argument and returns a positive integer.
+# # Important: You may not use pow, **, log, str, or len in your solution.
+# def sequence(n, term):
+#     """Return the first n terms of a sequence as an integer.
+#     >>> sequence(6, abs) # Terms are 1, 2, 3, 4, 5, 6
+#     123456
+#     >>> sequence(5, lambda k: k+8) # Terms are 9, 10, 11, 12, 13
+#     910111213
+#     >>> sequence(4, lambda k: pow(10, k)) # Terms are 10, 100, 1000, 10000
+#     10100100010000
 #     """
-#     if ______:
-#         yield lambda v: ______
-#     for i in range(len(k.branches)):
-#         for ______ in ______:
-#             yield new_lookup(i, lookup)
-# def new_lookup(i, f):
-#     def g(v):
-#         return ______
-#     return g
-
-
-# ### Tree Class definition ###
-# class Tree:
-#     def __init__(self, label, branches=[]):
-#         self.label = label
-#         for branch in branches:
-#             assert isinstance(branch, Tree)
-#         self.branches = list(branches)
-
-#     def is_leaf(self):
-#         return not self.branches
+#     t, k = 0, 1
+#     while ______:
+#         m = 1
+#         x = ______
+#         while m <= x:
+#             ______
+#         t = ______
+#         k = k + 1
+#     return t

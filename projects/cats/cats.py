@@ -15,8 +15,12 @@ def choose(paragraphs, select, k):
     paragraph returns true. If there are fewer than K such paragraphs, return
     the empty string.
     """
-    # BEGIN PROBLEM 1
+    # BEGIN PROBLEM 1'
     "*** YOUR CODE HERE ***"
+    try:
+        return [paragraph for paragraph in paragraphs if select(paragraph)][k]
+    except IndexError:
+        return ""
     # END PROBLEM 1
 
 
@@ -33,6 +37,7 @@ def about(topic):
     assert all([lower(x) == x for x in topic]), 'topics should be lowercase.'
     # BEGIN PROBLEM 2
     "*** YOUR CODE HERE ***"
+    return lambda x: True in [t in split(lower(remove_punctuation(x))) for t in topic]
     # END PROBLEM 2
 
 
@@ -57,6 +62,11 @@ def accuracy(typed, reference):
     reference_words = split(reference)
     # BEGIN PROBLEM 3
     "*** YOUR CODE HERE ***"
+    correct = 0
+    for i in range(min(len(typed_words), len(reference_words))):
+        if typed_words[i] == reference_words[i]:
+            correct+=1
+    return (100*correct) / len(typed_words) if len(typed_words)!=0 else 0.0
     # END PROBLEM 3
 
 
@@ -65,6 +75,7 @@ def wpm(typed, elapsed):
     assert elapsed > 0, 'Elapsed time must be positive'
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
+    return (len(typed)/5)*(60/elapsed) if len(typed) !=0 else 0.0
     # END PROBLEM 4
 
 
@@ -76,6 +87,23 @@ def autocorrect(user_word, valid_words, diff_function, limit):
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
     # END PROBLEM 5
+    # if user_word in valid_words:
+    #     return user_word
+    # minimum = min(valid_words, key=lambda a: diff_function(user_word, a, limit))
+    # return minimum if diff_function(user_word, minimum, limit) <= limit else user_word
+    if user_word in valid_words:
+        return user_word
+    mini, value = None, None
+    for i in range(len(valid_words)):
+        diff = diff_function(user_word, valid_words[i], limit)
+        if mini is None:
+            mini = diff
+            value = valid_words[i]
+        else:
+            if diff < mini:
+                mini = diff
+                value = valid_words[i]
+    return value if mini <= limit else user_word
 
 
 def shifty_shifts(start, goal, limit):
@@ -83,31 +111,43 @@ def shifty_shifts(start, goal, limit):
     in START need to be substituted to create GOAL, then adds the difference in
     their lengths.
     """
+    "rose", "bose"
     # BEGIN PROBLEM 6
-    assert False, 'Remove this line'
+    if start == goal:
+        return 0
+    elif not limit:
+        return float('inf')
+    elif not len(start):
+        return len(goal)
+    elif not len(goal):
+        return len(start)
+    return shifty_shifts(start[1:],goal[1:], limit) if start[0] == goal[0] else shifty_shifts(start[1:],goal[1:],limit-1) + 1
     # END PROBLEM 6
 
 
 def meowstake_matches(start, goal, limit):
     """A diff function that computes the edit distance from START to GOAL."""
-    assert False, 'Remove this line'
-
-    if ______________: # Fill in the condition
+    if start == goal: # Fill in the condition
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return 0
         # END
-
-    elif ___________: # Feel free to remove or add additional cases
+    elif not limit: # Feel free to remove or add additional cases
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return float('inf')
         # END
-
+    elif not len(start):
+        return len(goal)
+    elif not len(goal):
+        return len(start)
     else:
-        add_diff = ...  # Fill in these lines
-        remove_diff = ... 
-        substitute_diff = ... 
+        add_diff = meowstake_matches(start[1:],goal[1:], limit) if start[0] == goal[0] else meowstake_matches(start,goal[1:],limit-1)+1
+        remove_diff = meowstake_matches(start[1:],goal[1:], limit) if start[0] == goal[0] else meowstake_matches(start[1:],goal,limit-1)+1
+        substitute_diff = meowstake_matches(start[1:],goal[1:], limit) if start[0] == goal[0] else meowstake_matches(start[1:],goal[1:],limit-1)+1
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return min(add_diff, remove_diff, substitute_diff)
         # END
 
 
@@ -125,6 +165,19 @@ def report_progress(typed, prompt, id, send):
     """Send a report of your id and progress so far to the multiplayer server."""
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    correct = 0
+    for i in range(len(prompt)):
+        # print(typed[i], prompt[i], correct, i, len(typed))
+        if i+1 <= len(typed):
+            if typed[i] == prompt[i]:
+                correct+=1
+            else:
+                break
+        else:
+            break
+    progress = correct / len(prompt)
+    send({'id':id,'progress': progress})
+    return progress
     # END PROBLEM 8
 
 
@@ -151,8 +204,9 @@ def time_per_word(times_per_player, words):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    times = [[player[k+1]-player[k] for k in range(len(player)-1)] for player in times_per_player]
+    return game(words, times)
     # END PROBLEM 9
-
 
 def fastest_words(game):
     """Return a list of lists of which words each player typed fastest.
@@ -166,6 +220,9 @@ def fastest_words(game):
     words = range(len(all_words(game)))    # An index for each word
     # BEGIN PROBLEM 10
     "*** YOUR CODE HERE ***"
+    fastest = lambda index: [x[index] for x in all_times(game)].index(min([x[index] for x in all_times(game)]))
+    fastest_list = [fastest(i) for i in words]
+    return [[word_at(game,i) for i in range(len(fastest_list)) if k == fastest_list[i]] for k in players]
     # END PROBLEM 10
 
 
@@ -205,7 +262,7 @@ def game_string(game):
     """A helper function that takes in a game object and returns a string representation of it"""
     return "game(%s, %s)" % (game[0], game[1])
 
-enable_multiplayer = False  # Change to True when you
+enable_multiplayer = True  # Change to True when you
 
 ##########################
 # Extra Credit #
@@ -220,7 +277,22 @@ def key_distance_diff(start, goal, limit):
     goal = goal.lower() #converts the string to lowercase
 
     # BEGIN PROBLEM EC1
-    "*** YOUR CODE HERE ***"
+    if start == goal:
+        return 0
+    elif limit <= 0:
+        return float('inf')
+    elif not len(start):
+        return len(goal)
+    elif not len(goal):
+        return len(start)
+    else:
+        if start[0] == goal[0]:
+            return key_distance_diff(start[1:],goal[1:], limit)
+        else:
+            add_diff = key_distance_diff(start,goal[1:],limit-1)+1
+            remove_diff = key_distance_diff(start[1:],goal,limit-1)+1
+            substitute_diff = key_distance_diff(start[1:],goal[1:],limit-1)+key_distance[start[0], goal[0]]
+            return min(add_diff, remove_diff, substitute_diff)
     # END PROBLEM EC1
 
 def memo(f):
@@ -233,13 +305,32 @@ def memo(f):
         return cache[args]
     return memoized
 
+key_distance_diff = memo(key_distance_diff)
 key_distance_diff = count(key_distance_diff)
 
+cache = {}
 def faster_autocorrect(user_word, valid_words, diff_function, limit):
     """A memoized version of the autocorrect function implemented above."""
 
     # BEGIN PROBLEM EC2
     "*** YOUR CODE HERE ***"
+    args = (user_word, tuple(valid_words), diff_function, limit)
+    if args not in cache:
+        diff_function = memo(diff_function)
+        if user_word in valid_words:
+            return user_word
+        min, value = None, None
+        for i in range(len(valid_words)):
+            diff = diff_function(user_word, valid_words[i], limit)
+            if min is None:
+                min = diff
+                value = valid_words[i]
+            else:
+                if diff < min:
+                    min = diff
+                    value = valid_words[i]
+        cache[args] = value if min <= limit else user_word
+    return cache[args]
     # END PROBLEM EC2
 
 

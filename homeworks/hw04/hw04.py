@@ -44,11 +44,13 @@ def planet(size):
     """Construct a planet of some size."""
     assert size > 0
     "*** YOUR CODE HERE ***"
+    return ['planet', size]
 
 def size(w):
     """Select the size of a planet."""
     assert is_planet(w), 'must call size on a planet'
     "*** YOUR CODE HERE ***"
+    return w[1]
 
 def is_planet(w):
     """Whether w is a planet."""
@@ -105,6 +107,12 @@ def balanced(m):
     True
     """
     "*** YOUR CODE HERE ***"
+    torque_check = lambda m: length(left(m))*total_weight(end(left(m))) == length(right(m))*total_weight(end(right(m)))
+    if is_planet(m):
+        return True
+    elif torque_check(m):
+        return balanced(end(left(m))) and balanced(end(right(m)))
+    return False
 
 def totals_tree(m):
     """Return a tree representing the mobile with its total weight at the root.
@@ -136,6 +144,9 @@ def totals_tree(m):
     True
     """
     "*** YOUR CODE HERE ***"
+    if is_planet(m):
+        return tree(total_weight(m))
+    return tree(total_weight(m), branches=[totals_tree(end(left(m))),totals_tree(end(right(m)))])
 
 
 def replace_leaf(t, find_value, replace_value):
@@ -168,7 +179,14 @@ def replace_leaf(t, find_value, replace_value):
     True
     """
     "*** YOUR CODE HERE ***"
-
+    def helper(t):
+        if is_leaf(t):
+            if label(t) == find_value:
+                return tree(replace_value)
+            else:
+                return tree(label(t))
+        return tree(label(t), branches=[helper(branch) for branch in branches(t)])
+    return helper(t)
 
 def preorder(t):
     """Return a list of the entries in this tree in the order that they
@@ -181,7 +199,17 @@ def preorder(t):
     [2, 4, 6]
     """
     "*** YOUR CODE HERE ***"
-
+    lst = []
+    def helper(t,recurse=True):
+        if recurse:
+            lst.append(label(t))
+            if len(branches(t)):
+                for branch in branches(t):
+                    helper(branch)
+            else:
+                return helper(t, False)
+        return lst
+    return helper(t)
 
 def has_path(t, phrase):
     """Return whether there is a path in a tree where the entries along the path
@@ -213,6 +241,16 @@ def has_path(t, phrase):
     """
     assert len(phrase) > 0, 'no path for empty phrases.'
     "*** YOUR CODE HERE ***"
+    def helper(t, i):
+        if label(t) != phrase[i]:
+            return False
+        elif i+1 == len(phrase):
+            return True
+        for branch in branches(t):
+            if label(branch) == phrase[i+1]:
+                return helper(branch, i+1)
+        return False
+    return helper(t,0)
 
 
 def interval(a, b):
@@ -343,4 +381,3 @@ def copy_tree(t):
     5
     """
     return tree(label(t), [copy_tree(b) for b in branches(t)])
-

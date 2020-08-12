@@ -18,15 +18,15 @@ def same_digits(a, b):
     """
     assert a > 0 and b > 0
     while a and b:
-        if ______:
+        if a%10 == b%10:
             end = a % 10
-            while ______:
-                ______
-            while ______:
-                ______
+            while end == a%10:
+                a = a // 10
+            while end == b%10:
+                b = b // 10
         else:
-            ______
-    ______
+            return False
+    return a == b
 
 # ORIGINAL SKELETON FOLLOWS
 
@@ -52,9 +52,9 @@ def same_digits(a, b):
 #         if ______:
 #             end = a % 10
 #             while ______:
-#                 ______
+#                 a = a // 10
 #             while ______:
-#                 ______
+#                 b = b // 10
 #         else:
 #             ______
 #     ______
