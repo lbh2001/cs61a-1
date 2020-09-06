@@ -24,14 +24,15 @@ def tree_search(t, pred):
     >>> tree_search(t, lambda x: x % 2 == 1)
     Link(1, Link(5, Link(5)))
     """
-    L = ______
+    L = Link.empty
     def subtree_search(subtr):
-        ______ # Hint: nonlocal may be helpful in this line!
-        if ______:
-            L = ______
-        for ______ in ______:
-            ______
-    ______
+        nonlocal L # Hint: nonlocal may be helpful in this line!
+        print("Debug: ", subtr.label)
+        if pred(subtr.label):
+            L = Link(subtr.label, L)
+        for branch in subtr.branches:
+            subtree_search(branch)
+    subtree_search(t)
     return L
 
 """
@@ -63,13 +64,13 @@ class Organizer:
         [Link(9, Link(5, Link(6))), Link(0, Link(4, Link(2)))]
         """
         result = []
-        labels_seen = ______
+        labels_seen = []
         def take_it(x): # Hint: you can see pred within take_it
-            if ______ and ______:
-                ______
+            if x not in labels_seen and pred(x):
+                labels_seen.append(x)
                 return True
             return False
-        for pred in ______:
+        for pred in self._categories:
             result.append(tree_search(t, take_it))
         return result
 

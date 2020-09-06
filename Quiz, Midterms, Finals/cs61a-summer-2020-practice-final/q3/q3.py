@@ -33,13 +33,14 @@ class Network:
         self.friends = {} # Maps users to a list of their friends
 
     def add_friend(self, user1, user2):
-        if ______ in ______:
-            ______
-        if ______ in ______:
-            ______
-        ______
-        ______
-
+        if user1 not in self.friends:
+            print("Debug: HI")
+            self.friends[user1] = []
+        if user2 not in self.friends:
+            print("Debug: HO")
+            self.friends[user2] = []
+        self.friends[user1] = self.friends[user1]+ ([user2] if user2 not in self.friends[user1] else [])
+        self.friends[user2] = self.friends[user2]+ ([user1] if user1 not in self.friends[user2] else [])
     """
     Part (b) (5 pt) CS61A+ turns out to be unpopular. To attract more users, the TAs want to implement a feature
     that checks if two users have at most n degrees of separation. Consider the following CS61A+ Network:
@@ -73,14 +74,14 @@ class Network:
         >>> cs61a_plus.degrees('Albert', 'Jessica', 10) # No friends!
         False
         """
-        if ______:
-            return ______
-        elif ______:
-            return ______
-        for friend in ______:
-            if ______:
+        if n == 0:
+            return False
+        elif user1 in self.friends[user2]:
+            return True
+        for friend in self.friends[user2]:
+            if self.degrees(user1, friend, n-1):
                 return True
-        return ______
+        return False
 
 
 
@@ -167,5 +168,3 @@ class Network:
 #             if ______:
 #                 return True
 #         return ______
-
-

@@ -22,19 +22,17 @@ def catch_up(lnk1, lnk2):
     >>> print ( evens )
     <2 4 6 8>
     """
-
     def catcher(lnk1, lnk2, sum1, sum2):
-        sum1 = ______
-        sum2 = ______
-        if ______:
-            lower = ______
-            for ______ in ______:
-                ______ = Link(1)
-                ______
+        sum1 = sum1 + lnk1.first
+        sum2 = sum2 + lnk2.first
+        if lnk1.rest is Link.empty or lnk2.rest is Link.empty:
+            lower = lnk1 if sum1 < sum2 else lnk2
+            for _ in range(abs(sum1-sum2)):
+                lower.rest = Link(1)
+                lower = lower.rest
         else :
-            catcher(______)
-    catcher(______)
-
+            catcher(lnk1.rest, lnk2.rest, sum1, sum2)
+    catcher(lnk1, lnk2, 0, 0)
 
 ### Reference Code for Trees/Linked Lists ###
 

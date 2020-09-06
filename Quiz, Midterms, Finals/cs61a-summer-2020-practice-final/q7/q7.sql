@@ -40,10 +40,10 @@ CREATE TABLE toppings AS
 --      python3 ok -q a
 
 CREATE TABLE ryans_drinks AS
-    SELECT ______ AS tea, ______ AS syrup, ______ AS topping
-        FROM ______
-            WHERE ______
-                ______;
+    SELECT c.tea AS tea, a.syrup AS syrup, b.topping AS topping
+        FROM syrups as a, toppings as b, teas as c
+            WHERE b.popularity+a.popularity >= 9
+                AND b.tea_type = c.tea_type;
 
 -- Part (b) (4 pt)
 -- Chae creates the table special_drinks to represent a special menu of popular drink combinations.
@@ -66,10 +66,10 @@ CREATE TABLE kavis_drinks AS
 -- type in kavis_drinks. Assume there is at most one drink of each tea type that fits this description.
 
 INSERT INTO special_drinks
-    SELECT d.tea, d.syrup, d.topping, ______
-        FROM kavis_drinks AS d, ______, ______
-        WHERE ______
-        GROUP BY ______;
+    SELECT d.tea, d.syrup, d.topping, MAX((t.popularity + s.popularity) / 2.0)
+        FROM kavis_drinks AS d, syrups AS s, toppings AS t
+        WHERE d.syrup = s.syrup AND d.topping = t.topping
+        GROUP BY t.tea_type;
 
 -- Part (c) (1 pt)
 -- Chae notices that not many people are purchasing drinks with grass jelly and that red bean is becoming
@@ -79,8 +79,8 @@ INSERT INTO special_drinks
 -- To run tests just for this part run
 --      python3 ok -q c
 
-DELETE FROM ______ WHERE ______;
-UPDATE toppings SET ______ WHERE ______;
+DELETE FROM toppings WHERE topping = "grass jelly";
+UPDATE toppings SET popularity = 3 WHERE topping = "red bean";
 
 
 -- ORIGINAL SKELETON FOLLOWS
@@ -166,4 +166,3 @@ UPDATE toppings SET ______ WHERE ______;
 
 -- DELETE FROM ______ WHERE ______;
 -- UPDATE toppings SET ______ WHERE ______;
-
